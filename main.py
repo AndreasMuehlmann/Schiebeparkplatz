@@ -1,4 +1,3 @@
-#
 import requests
 from collections import deque
 class Obstructing_car:
@@ -8,7 +7,7 @@ class Obstructing_car:
         self.back = right
 
 
-def get_parkinglot_from_website():
+def get_parkinglot_from_website(): #make more readable
     url = 'https://bwinf.de/fileadmin/user_upload/parkplatz0.txt'
     result = requests.get(url)
     doc = result.content.decode("utf-8").split()
@@ -26,7 +25,7 @@ def get_parkinglot_from_website():
     for parkingspace in range(len(normally_parking_cars)):
         obstructing_parkinglot.append(0)
     for car in range(count_obstructing_cars):
-        obstructing_parkinglot[int(doc[car * 2 + 1])], obstructing_parkinglot[int(doc[car * 2 + 1]) + 1] = doc[car * 2], doc[car * 2]
+        obstructing_parkinglot[int(doc[car * 2 + 1])], obstructing_parkinglot[int(doc[car * 2 + 1]) + 1] = doc[car * 2], doc[car * 2] # write the cars into the list not into a special list
         obstructing_cars = Obstructing_car(doc[car * 2], int(doc[car * 2 + 1]), int(doc[car * 2 + 1]) + 1)
     return normally_parking_cars, obstructing_parkinglot, obstructing_cars
 
@@ -45,50 +44,39 @@ def give_car_and_side_obstructing(to_free_up):
         elif car.right == obstructing_parkinglot[to_free_up]:
             return car, 'right'
 
-def car_mover(to_free_up, direction, actions=deque([])): 
+def car_mover(to_free_up, direction, actions=deque([])): # doesnt make sense so far
     obstructing_car, side = give_car_and_side_obstructing(obstructing_parkinglot, obstructing_cars, to_free_up)
-    if direction == 'left':
-        if side != direction:
-            if obstructing_parkinglot[obstructing_car.left - 1]:
-                to_free_up = obstructing_car.left - 1
-        else:
-            if obstructing_parkinglot[obstructing_car.left - 2]:
-                to_free_up = obstructing_car.left - 2
-    elif direction == 'right':
-        if side != direction:
-            if obstructing_parkinglot[obstructing_car.left + 1]:
-                to_free_up = obstructing_car.left + 1
-        else:
-            if obstructing_parkinglot[obstructing_car.left + 2]:
-                to_free_up = obstructing_car.left + 2
-    action, possible = car_mover(obstructing_parkinglot, obstructing_cars, to_free_up, direction, actions=deque([]))
-    actions.append(action)
-    if possible:
-        move(obstructing_parkinglot, obstructing_car, direction, 2)
-    return
-
-def move(car, direction, amount):
-    obstructing_parkinglot[car.right] = 0
-    obstructing_parkinglot[car.right] = 0
-    if direction == 'left':
-        car.right -= amount
-        car.left -= amount
+    if side != direction:
+        amount = 1
     else:
-        car.right += amount
-        car.left += amount
-    obstructing_parkinglot[car.right] = 1
-    obstructing_parkinglot[car.right] = 1
+        amount = 2
+    if direction == 'left':
+        amount *= -1    
+    # if you hit the end of the parkinglot actions = False
+    # action has to be declared
+    action = '' # has to be removed after
+    if obstructing_parkinglot[obstructing_car.left + amount]:
+        actions = car_mover(obstructing_parkinglot, obstructing_cars, obstructing_car.left + amount, direction, actions=deque([]))
+    if not actions == False:
+        actions.append(action)
+    return actions
 
 def main():
     global obstructing_parkinglot
-    global obstructing_cars
+    global obstructing_cars # remove this as well after fixing get_parkinglot_from_website()
     normally_parking_cars, obstructing_parkinglot, obstructing_cars = get_parkinglot_from_website()
-    for carspace in range(len(normally_parking_cars)):
-        if not obstructing_parkinglot[carspace]:
-            print(f'{normally_parking_cars[carspace]}:')
+    for parkingspace in range(len(normally_parking_cars)):
+        if not obstructing_parkinglot[parkingspace]:
+            print(f'{normally_parking_cars[parkingspace]}:')
         else:
-            actions = car_mover(obstructing_parkinglot, carspace)
-            print_actions(normally_parking_cars[carspace], actions)
+            actions_left, possible = car_mover(parkingspace, 'left')
+            actions_right, possible = car_mover(parkingspace, 'right')
+            if actions_left or actions_right:
+                print(f'The car that blocks the parkingspace {parkingspace} can`t be moved out of the way.')
+            if actions_left < actions_right:
+                print_actions(normally_parking_cars[parkingspace], actions_left)
+            else:
+                print_actions(normally_parking_cars[parkingspace], actions_right)
 
 if __name__ == '__main__':
     main()
