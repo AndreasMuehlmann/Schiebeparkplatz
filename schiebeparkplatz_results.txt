@@ -1,0 +1,87 @@
+Schiebeparkplatz
+
+Test 0
+
+A: 
+B: 
+C: H right 1
+D: H left 1
+E: 
+F: H left 1,  I left 2
+G: I left 1
+
+
+Test 1
+
+A: 
+B: P right 1,  O right 1
+C: O left 1
+D: P right 1
+E: O left 1,  P left 1
+F: 
+G: Q right 1
+H: Q left 1
+I: 
+J: 
+K: R right 1
+L: R left 1
+M: 
+N: 
+
+
+Test 2
+
+A: 
+B: 
+C: O right 1
+D: O left 1
+E: 
+F: O left 1,  P left 2
+G: P left 1
+H: R right 1,  Q right 1
+I: P left 1,  Q left 1
+J: R right 1
+K: P left 1,  Q left 1,  R left 1
+L: 
+M: P left 1,  Q left 1,  R left 1,  S left 2
+N: S left 1
+
+
+Test 3
+
+A: 
+B: O right 1
+C: O left 1
+D: 
+E: P right 1
+F: P left 1
+G: 
+H: 
+I: Q left 2
+J: Q left 1
+K: Q left 2,  R left 2
+L: Q left 1,  R left 1
+M: Q left 2,  R left 2,  S left 2
+N: Q left 1,  R left 1,  S left 1
+
+
+Test 4
+
+A: R right 1,  Q right 1
+B: R right 2,  Q right 2
+C: R right 1
+D: R right 2
+E: 
+F: 
+G: S right 1
+H: S left 1
+I: 
+J: 
+K: T right 1
+L: T left 1
+M: 
+N: U right 1
+O: U left 1
+P: 
+
+

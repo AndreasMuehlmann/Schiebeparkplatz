@@ -1,8 +1,7 @@
 import requests
 from collections import deque
 
-def get_parkinglot_from_website():
-    url = 'https://bwinf.de/fileadmin/user_upload/parkplatz5.txt'
+def get_parkinglot_from_website(url):
     result = requests.get(url)
     doc = result.content.decode("utf-8").split()
     normal_parkinglot = give_normal_parkinglot(doc)
@@ -77,48 +76,50 @@ def count_amount(actions):
         total_amount += action[2]
     return total_amount
 
-def print_actions(parkingspace, actions):
-    print(f'{parkingspace}: ', end = '')
+def write_acitons_to_file(parkingspace, actions, file):
+    file.write(f'{parkingspace}: ')
     for count, action in enumerate(actions):
         if count != len(actions) - 1:
-            print(f'{action[0]} {action[1]} {action[2]}', end = ', ')
+            file.write(f'{action[0]} {action[1]} {action[2]},  ')
         else:
-            print(f'{action[0]} {action[1]} {action[2]}')
+            file.write(f'{action[0]} {action[1]} {action[2]}\n')
     return
 
-def print_shortest_method_if_there(blocked_car, actions_left, actions_right):
+def write_shortest_method_to_file(blocked_car, actions_left, actions_right, file):
     if actions_left:
         if actions_right:
             if len(actions_left) == len(actions_right):
                 if count_amount(actions_left) < count_amount(actions_right):
-                    print_actions(blocked_car, actions_left)
+                    write_acitons_to_file(blocked_car, actions_left, file)
                 else:
-                    print_actions(blocked_car, actions_right)
+                    write_acitons_to_file(blocked_car, actions_right, file)
             elif len(actions_left) < len(actions_right):
-                print_actions(blocked_car, actions_left)
+                write_acitons_to_file(blocked_car, actions_left, file)
             else:
-                print_actions(blocked_car, actions_right)
+                write_acitons_to_file(blocked_car, actions_right, file)
         else:
-            print_actions(blocked_car, actions_left)   
+            write_acitons_to_file(blocked_car, actions_left, file)   
     elif actions_right:
-        print_actions(blocked_car, actions_right)
+        write_acitons_to_file(blocked_car, actions_right, file)
     else:
-        print(f'{blocked_car}: not possible to free up.')
+        file.write(f'{blocked_car}: not possible to free up.')
 
 def main():
     global obstructing_parkinglot
-    normal_parkinglot, obstructing_parkinglot = get_parkinglot_from_website()
-    print(normal_parkinglot)
-    print(obstructing_parkinglot)
-    for parkingspace in range(len(normal_parkinglot)):
-        if not obstructing_parkinglot[parkingspace]:
-            print(f'{normal_parkinglot[parkingspace]}:')
-        else:
-            actions_left = car_mover(parkingspace, 'left')
-            actions_right = car_mover(parkingspace, 'right')
-            print_shortest_method_if_there(normal_parkinglot[parkingspace], actions_left, actions_right)
+    with open('schiebeparkplatz_results.txt', 'w') as file: 
+        file.write('Schiebeparkplatz\n\n')
+        for task in range(5):
+            file.write(f'Test {task}\n\n')
+            normal_parkinglot, obstructing_parkinglot = get_parkinglot_from_website(f'https://bwinf.de/fileadmin/user_upload/parkplatz{task}.txt')
+            for parkingspace in range(len(normal_parkinglot)):
+                if not obstructing_parkinglot[parkingspace]:
+                    file.write(f'{normal_parkinglot[parkingspace]}: \n')
+                else:
+                    actions_left = car_mover(parkingspace, 'left')
+                    actions_right = car_mover(parkingspace, 'right')
+                    write_shortest_method_to_file(normal_parkinglot[parkingspace], actions_left, actions_right, file)
+            file.write('\n\n')
     return
-
 
 if __name__ == '__main__':
     main()
