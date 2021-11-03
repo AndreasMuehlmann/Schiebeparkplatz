@@ -108,7 +108,7 @@ def main():
     global obstructing_parkinglot
     with open('schiebeparkplatz_results.txt', 'w') as file: 
         file.write('Schiebeparkplatz\n\n')
-        for task in range(5):
+        for task in range(6):
             file.write(f'Test {task}\n\n')
             normal_parkinglot, obstructing_parkinglot = get_parkinglot_from_website(f'https://bwinf.de/fileadmin/user_upload/parkplatz{task}.txt')
             for parkingspace in range(len(normal_parkinglot)):
