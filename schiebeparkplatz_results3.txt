@@ -1,0 +1,18 @@
+Schiebeparkplatz
+
+Test 3
+
+A: 
+B: O right 1
+C: O left 1
+D: 
+E: P right 1
+F: P left 1
+G: 
+H: 
+I: Q left 2
+J: Q left 1
+K: Q left 2,  R left 2
+L: Q left 1,  R left 1
+M: Q left 2,  R left 2,  S left 2
+N: Q left 1,  R left 1,  S left 1

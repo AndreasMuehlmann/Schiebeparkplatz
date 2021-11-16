@@ -12,7 +12,9 @@ def give_normal_parkinglot(doc):
     first_letter = doc[0]
     last_letter = doc[1]
     normal_parkinglot = []
+
     alphabet=[(chr(ord(first_letter)+i)) for i in range(26)]
+
     for letter in alphabet:
         normal_parkinglot.append(letter)
         if letter == last_letter:
@@ -23,8 +25,10 @@ def give_obstructing_parkinglot(doc, normally_parking_cars):
     count_obstructing_cars = int(doc[2])
     doc = doc[3:]
     obstructing_parkinglot = []
+
     for parkingspace in range(len(normally_parking_cars)):
         obstructing_parkinglot.append(0)
+
     for car in range(count_obstructing_cars):
         obstructing_parkinglot[int(doc[car * 2 + 1])], obstructing_parkinglot[int(doc[car * 2 + 1]) + 1] = doc[car * 2], doc[car * 2]
     return obstructing_parkinglot
@@ -58,14 +62,19 @@ def give_spot_to_check(to_free_up, amount, side, direction):
 def car_mover(to_free_up, direction):
     actions = deque([])
     obstructing_car = obstructing_parkinglot[to_free_up]
+
     side = give_side_obstructing(to_free_up)
     amount = give_amount(direction, side)
     spot_to_check = give_spot_to_check(to_free_up, amount, side, direction)
+
     if not 0 <= spot_to_check < len(obstructing_parkinglot):
         return False
+
     action = [obstructing_car, direction, amount]
+
     if obstructing_parkinglot[spot_to_check] != obstructing_car and obstructing_parkinglot[spot_to_check]:
         actions = car_mover(spot_to_check, direction)
+
     if not actions == False:
         actions.append(action)
     return actions
@@ -106,19 +115,22 @@ def write_shortest_method_to_file(blocked_car, actions_left, actions_right, file
 
 def main():
     global obstructing_parkinglot
-    with open('schiebeparkplatz_results.txt', 'w') as file: 
-        file.write('Schiebeparkplatz\n\n')
-        for task in range(6):
+    for task in range(6):
+        with open(f'schiebeparkplatz_results{task}.txt', 'w') as file: 
+            file.write('Schiebeparkplatz\n\n')
             file.write(f'Test {task}\n\n')
             normal_parkinglot, obstructing_parkinglot = get_parkinglot_from_website(f'https://bwinf.de/fileadmin/user_upload/parkplatz{task}.txt')
+            print(normal_parkinglot)
+            print(obstructing_parkinglot)
+
             for parkingspace in range(len(normal_parkinglot)):
                 if not obstructing_parkinglot[parkingspace]:
                     file.write(f'{normal_parkinglot[parkingspace]}: \n')
                 else:
                     actions_left = car_mover(parkingspace, 'left')
                     actions_right = car_mover(parkingspace, 'right')
+
                     write_shortest_method_to_file(normal_parkinglot[parkingspace], actions_left, actions_right, file)
-            file.write('\n\n')
     return
 
 if __name__ == '__main__':
